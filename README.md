@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Academic Kickstart
 
 **Academic** is a framework to help you create a beautiful website quickly. Perfect for personal, student, or academic websites. [Check out the latest demo](https://academic-demo.netlify.com/) of what you'll get in less than 10 minutes or [view the documentation](https://sourcethemes.com/academic/docs/).
@@ -50,3 +51,6 @@ Copyright 2017 [George Cushen](https://georgecushen.com).
 Released under the [MIT](https://github.com/sourcethemes/academic-kickstart/blob/master/LICENSE.md) license.
 
 [![Analytics](https://ga-beacon.appspot.com/UA-78646709-2/academic-kickstart/readme?pixel)](https://github.com/igrigorik/ga-beacon)
+=======
+# ozcelikfu.github.io
+>>>>>>> 03a5c25088fcbf829647590f5c786f13908e1111
