@@ -2,9 +2,47 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
     
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
     <url>
     
       <loc>https://ozcelikfu.github.io/post/</loc>
+      <lastmod>2017-01-01T00:00:00+03:00</lastmod>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>https://ozcelikfu.github.io/tr/post/</loc>
       <lastmod>2017-01-01T00:00:00+03:00</lastmod>
     </url>
     
@@ -20,7 +58,23 @@
     
     <url>
     
+      <loc>https://ozcelikfu.github.io/tr/publication/</loc>
+      <lastmod>2017-01-01T00:00:00+03:00</lastmod>
+    </url>
+    
+  
+    
+    <url>
+    
       <loc>https://ozcelikfu.github.io/talk/</loc>
+      <lastmod>2017-01-01T00:00:00+03:00</lastmod>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>https://ozcelikfu.github.io/tr/talk/</loc>
       <lastmod>2017-01-01T00:00:00+03:00</lastmod>
     </url>
     
@@ -35,7 +89,22 @@
     
     <url>
     
+      <loc>https://ozcelikfu.github.io/tr/author/admin/</loc>
+    </url>
+    
+  
+    
+    <url>
+    
       <loc>https://ozcelikfu.github.io/author/</loc>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>https://ozcelikfu.github.io/tr/author/</loc>
       <priority>0</priority>
     </url>
     
@@ -77,6 +146,15 @@
     <url>
     
       <loc>https://ozcelikfu.github.io/tags/</loc>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>https://ozcelikfu.github.io/tr/</loc>
+      <lastmod>2017-10-15T00:00:00+03:00</lastmod>
       <priority>0</priority>
     </url>
     
