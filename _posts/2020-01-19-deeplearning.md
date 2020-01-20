@@ -1,14 +1,63 @@
 ---
-title: "Deep Learning"
-date: 2019-01-19
+title: "Deep Learning Introduction"
+date: 2020-01-19
 tags: [deep learning, machine learning, neural networks]
 header:
-  image: "/images/itu3.jpeg"
-excerpt: "Deep Learning, Machine Learning, Neural Networks
+  image: "/images/perceptron/itu2.jpg"
+excerpt: "Deep Learning, Machine Learning, Neural Networks"
+mathjax: "true"
 ---
 
-# Deep Learning
+# H1 Heading
 
-## An Humble Introduction
+## H2 Heading
 
-Some information about Deep Learning
+### H3 Heading
+
+Here's some basic text.
+
+And here's some *italics*
+
+Here's some **bold** text.
+
+What about a [link](https://github.com/dataoptimal)?
+
+Here's a bulleted list:
+* First item
++ Second item
+- Third item
+
+Here's a numbered list:
+1. First
+2. Second
+3. Third
+
+Python code block:
+```python
+    import numpy as np
+
+    def test_function(x, y):
+      z = np.sum(x,y)
+      return z
+```
+
+R code block:
+```r
+library(tidyverse)
+df <- read_csv("some_file.csv")
+head(df)
+```
+
+Here's some inline code `x+y`.
+
+Here's an image:
+<img src="{{ site.url }}{{ site.baseurl }}/images/perceptron/linsep.jpg" alt="linearly separable data">
+
+Here's another image using Kramdown:
+![alt]({{ site.url }}{{ site.baseurl }}/images/perceptron/linsep.jpg)
+
+Here's some math:
+
+$$z=x+y$$
+
+You can also put it inline $$z=x+y$$
