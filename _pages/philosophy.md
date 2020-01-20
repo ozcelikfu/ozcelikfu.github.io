@@ -1,5 +1,5 @@
 ---
-layout: posts
+layout: philosophy
 permalink: /philosophy/
 title: "Philosophy"
 author_profile: true
