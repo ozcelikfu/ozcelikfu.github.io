@@ -1,5 +1,7 @@
 ---
 title: "Deep Learning Introduction"
+categories: 
+  - deep learning
 date: 2020-01-19
 tags: [deep learning, machine learning, neural networks]
 header:
