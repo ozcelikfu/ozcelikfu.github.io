@@ -301,3 +301,15 @@ defaults:
     values:
       layout: single
       author_profile: true
+  
+  # _philosophy
+  - scope:
+      path: ""
+      type: philosophy
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      comments: # true
+      share: true
+      related: true
