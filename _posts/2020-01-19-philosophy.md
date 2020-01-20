@@ -1,5 +1,7 @@
 ---
-title: "Philosophy"
+title: "Philosophy Introduction"
+categories: 
+  - philosophy
 date: 2020-01-20
 tags: [philosophy,science,religion]
 header:

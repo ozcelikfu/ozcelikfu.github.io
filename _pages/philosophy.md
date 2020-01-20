@@ -1,8 +1,8 @@
 ---
-layout: philosophy
-permalink: /philosophy/
-title: "Philosophy"
-author_profile: true
-header:
-  image: "/images/itu3.jpeg"
+title: Philosophy
+layout: category
+permalink: /categories/philosophy/
+taxonomy: Philosophy
 ---
+
+Sample post listing for the category `Philosophy`.
