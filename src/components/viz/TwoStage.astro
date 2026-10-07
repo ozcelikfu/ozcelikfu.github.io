@@ -1,0 +1,111 @@
+---
+// Brain-Diffuser's two stages, as an explorable: noise → VDVAE layout → diffusion detail.
+---
+<figure class="viz two-stage" data-two-stage>
+  <div class="two-stage__stage">
+    <canvas width="240" height="240" role="img" aria-label="Reconstruction preview controlled by the slider below"></canvas>
+    <div class="two-stage__labels" aria-hidden="true">
+      <span data-l="0">x<sub>T</sub> ~ 𝒩(0, I)</span>
+      <span data-l="1">Stage 1 · VDVAE</span>
+      <span data-l="2">Stage 2 · Versatile Diffusion</span>
+    </div>
+  </div>
+  <div class="two-stage__controls">
+    <label class="two-stage__label mono" for="two-stage-range">Reconstruction progress</label>
+    <input id="two-stage-range" type="range" min="0" max="100" value="38" step="1" />
+    <div class="two-stage__ticks mono" aria-hidden="true"><span>noise</span><span>layout</span><span>detail</span></div>
+    <p class="two-stage__desc" aria-live="polite" data-desc></p>
+  </div>
+  <figcaption class="viz__note mono">Schematic illustration of the Brain-Diffuser pipeline — painted scene, not a real reconstruction.</figcaption>
+</figure>
+
+<style>
+  .two-stage { margin: 0; display: grid; grid-template-columns: minmax(0, 300px); gap: 1.25rem; }
+  .two-stage__stage { position: relative; }
+  .two-stage canvas { width: 100%; aspect-ratio: 1; border-radius: 12px; border: 1px solid var(--line); image-rendering: auto; }
+  .two-stage__labels { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.6rem; }
+  .two-stage__labels span { font-family: var(--font-mono); font-size: 0.66rem; padding: 0.15em 0.55em; border-radius: 999px; border: 1px solid var(--line-2); color: var(--muted); transition: all 0.3s; }
+  .two-stage__labels span.is-active { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+  .two-stage__label { display: block; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.4rem; }
+  .two-stage input[type='range'] { width: 100%; accent-color: var(--accent); }
+  .two-stage__ticks { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.7rem; }
+  .two-stage__desc { margin: 0.9rem 0 0; color: var(--text-2); font-size: 0.95rem; min-height: 4.8em; }
+  .viz__note { grid-column: 1 / -1; margin: 0; font-size: 0.68rem; color: var(--muted); }
+  @media (min-width: 1100px) { .two-stage { grid-template-columns: minmax(0, 340px); } }
+</style>
+
+<script>
+  import { paintScene, rng, gaussian } from '../../scripts/scene';
+
+  const DESC = [
+    'Diffusion starts from pure noise. Everything that follows is decided by features predicted from the brain.',
+    'Stage 1 — fMRI patterns are mapped to the latent space of a very deep VAE (VDVAE), which yields an initial guess: the overall layout and low-level structure of the scene.',
+    'Stage 2 — the initial guess is refined by a latent diffusion model (Versatile Diffusion), conditioned on CLIP-vision and CLIP-text features also predicted from fMRI, adding semantics and detail.',
+  ];
+
+  function init(root: HTMLElement) {
+    const canvas = root.querySelector('canvas')!;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
+    const range = root.querySelector<HTMLInputElement>('input')!;
+    const desc = root.querySelector<HTMLElement>('[data-desc]')!;
+    const labels = [...root.querySelectorAll<HTMLElement>('[data-l]')];
+    const S = canvas.width;
+
+    const full = paintScene('meadow', S);
+    const fullData = full.getContext('2d')!.getImageData(0, 0, S, S).data;
+    // low-res "VDVAE" guess: downsample hard, upsample smoothly
+    const tmp = document.createElement('canvas');
+    tmp.width = tmp.height = 10;
+    const tctx = tmp.getContext('2d')!;
+    tctx.drawImage(full, 0, 0, 10, 10);
+    const lowC = document.createElement('canvas');
+    lowC.width = lowC.height = S;
+    const lctx = lowC.getContext('2d')!;
+    lctx.imageSmoothingEnabled = true;
+    lctx.imageSmoothingQuality = 'high';
+    lctx.drawImage(tmp, 0, 0, S, S);
+    const lowData = lctx.getImageData(0, 0, S, S).data;
+
+    const r = rng(7);
+    const noise = new Float32Array(S * S * 3);
+    for (let i = 0; i < noise.length; i++) noise[i] = gaussian(r);
+
+    const out = ctx.createImageData(S, S);
+    const ease = (x: number) => x * x * (3 - 2 * x);
+
+    function render() {
+      const t = Number(range.value) / 100;
+      const o = out.data;
+      let stage: number;
+      if (t < 0.5) {
+        const u = ease(t / 0.5);
+        stage = t < 0.12 ? 0 : 1;
+        for (let i = 0, j = 0; i < o.length; i += 4, j += 3) {
+          for (let k = 0; k < 3; k++) {
+            const n = 128 + noise[j + k] * 64;
+            o[i + k] = n + (lowData[i + k] - n) * u;
+          }
+          o[i + 3] = 255;
+        }
+      } else {
+        const u = ease((t - 0.5) / 0.5);
+        stage = 2;
+        const resid = (1 - u) * 18;
+        for (let i = 0, j = 0; i < o.length; i += 4, j += 3) {
+          for (let k = 0; k < 3; k++) {
+            o[i + k] = lowData[i + k] + (fullData[i + k] - lowData[i + k]) * u + noise[j + k] * resid;
+          }
+          o[i + 3] = 255;
+        }
+      }
+      ctx.putImageData(out, 0, 0);
+      labels.forEach((l, i) => l.classList.toggle('is-active', i === stage));
+      desc.textContent = DESC[stage];
+      range.setAttribute('aria-valuetext', `${Math.round(t * 100)}% — ${['noise', 'stage 1 layout', 'stage 2 detail'][stage]}`);
+    }
+    range.addEventListener('input', render);
+    render();
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-two-stage]').forEach(init);
+</script>

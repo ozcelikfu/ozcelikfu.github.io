@@ -1,0 +1,80 @@
+---
+import Base from '../layouts/Base.astro';
+import PubItem from '../components/PubItem.astro';
+import PromptMatrix from '../components/viz/PromptMatrix.astro';
+import Icon from '../components/Icon.astro';
+import { byTheme } from '../data/publications';
+
+const meaning = byTheme('meaning');
+const talks = meaning.filter((p) => p.type === 'talk');
+const chapters = meaning.filter((p) => p.type === 'chapter');
+---
+<Base title="AI, philosophy & religion" description="Talks, book chapters and essays by Furkan Özçelik on artificial intelligence, large language models, philosophy of mind and religion.">
+  <header class="page-head">
+    <div class="wrap">
+      <p class="kicker">Ideas</p>
+      <h1>AI, philosophy <em>&amp;</em> religion</h1>
+      <p class="lead">
+        Drawn to the old questions that new machines make urgent again: what minds are, what understanding is, and what
+        it means when a system trained on human text starts to reason about God, value and meaning.
+      </p>
+    </div>
+  </header>
+
+  <section class="section" aria-labelledby="llm-h">
+    <div class="wrap split">
+      <div>
+        <p class="kicker"><span class="numeral">i</span>Talks</p>
+        <h2 id="llm-h">Arguments for God, <em>asked</em> of a language model</h2>
+        <p class="body">
+          Large language models are increasingly consulted on questions of belief. Two talks — at the AI, Philosophy and
+          Religion conference in Warsaw (May 2024) and at Religion, Logic and AI in Sinaia (September 2023) — explored how
+          ChatGPT and other LLMs assess classical arguments for God’s existence, and how those assessments change with the
+          prompt and with the identity the model is asked to adopt.
+        </p>
+        <div>{talks.map((p) => <PubItem p={p} />)}</div>
+      </div>
+      <div class="split__fig"><PromptMatrix /></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="chapters-h">
+    <div class="wrap split split--text">
+      <div>
+        <p class="kicker"><span class="numeral">ii</span>Book chapters</p>
+        <h2 id="chapters-h">Writing for a <em>Turkish</em> readership</h2>
+        <p class="body">
+          Two chapters in edited Turkish volumes introduce artificial intelligence, deep learning and large language models
+          to readers in the humanities, and discuss the philosophical and religious implications of these technologies — along
+          with the dangers and debates surrounding AI.
+        </p>
+      </div>
+      <div>{chapters.map((p) => <PubItem p={p} />)}</div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="found-h">
+    <div class="wrap split split--text">
+      <div>
+        <p class="kicker"><span class="numeral">iii</span>Community</p>
+        <h2 id="found-h">Science Philosophy Religion <em>Foundation</em></h2>
+      </div>
+      <div>
+        <p class="body">
+          Co-founder of the Science Philosophy Religion Foundation in Turkey, dedicated to dialogue between science,
+          philosophy and religion. Wide reading across the three ends up, in part, in the notebook as essays and book notes.
+        </p>
+        <p><a class="text-link" href="/writing/">Read the notebook <Icon name="arrow-right" size={16} /></a></p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .split { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(28px, 6vw, 80px); align-items: start; }
+  .split--text { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); }
+  .split h2 { font-size: clamp(1.7rem, 3.2vw, 2.5rem); }
+  .split .body { color: var(--text-2); }
+  .split__fig { position: sticky; top: calc(var(--header-h) + 24px); }
+  @media (max-width: 860px) { .split, .split--text { grid-template-columns: 1fr; } .split__fig { position: static; } }
+</style>

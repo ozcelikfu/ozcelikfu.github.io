@@ -1,0 +1,23 @@
+---
+import { primaryHref, type Publication } from '../data/publications';
+interface Props { items: Publication[] }
+const { items } = Astro.props;
+---
+<ul class="paper-list" role="list">
+  {items.map((p) => {
+    const href = primaryHref(p);
+    const v = p.venueShort ?? p.venue;
+    const venue = p.year && !v.includes(String(p.year)) ? `${v} · ${p.year}` : v;
+    const inner = (
+      <>
+        <span class="paper-list__title" lang={p.lang}>{p.title}</span>
+        <span class="paper-list__venue">{venue}{p.note && ` · ${p.note}`}</span>
+      </>
+    );
+    return (
+      <li>
+        {href ? <a href={href} target="_blank" rel="noopener">{inner}</a> : <div class="paper-list__item">{inner}</div>}
+      </li>
+    );
+  })}
+</ul>

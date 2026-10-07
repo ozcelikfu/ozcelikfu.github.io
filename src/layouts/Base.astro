@@ -1,0 +1,98 @@
+---
+import '@fontsource-variable/newsreader/opsz.css';
+import '@fontsource-variable/newsreader/opsz-italic.css';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { profile, activeLinks } from '../data/profile';
+import { useTranslations, translatedPaths, type Lang } from '../i18n/ui';
+
+interface Props {
+  title?: string;
+  description?: string;
+  lang?: Lang;
+  type?: 'website' | 'profile' | 'article';
+}
+const {
+  title,
+  description = `${profile.name} — ${profile.title} at ${profile.affiliation}. ${profile.lead}`,
+  lang = 'en',
+  type = 'website',
+} = Astro.props;
+const t = useTranslations(lang);
+const fullTitle = title ? `${title} · ${profile.name}` : `${profile.name} — ${profile.tagline}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const basePath = Astro.url.pathname.replace(/^\/tr(?=\/)/, '');
+const hasTr = translatedPaths.includes(basePath);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  alternateName: profile.nameAscii,
+  jobTitle: profile.title,
+  url: Astro.site?.toString(),
+  affiliation: { '@type': 'CollegeOrUniversity', name: profile.affiliation },
+  alumniOf: [
+    { '@type': 'CollegeOrUniversity', name: 'Université de Toulouse' },
+    { '@type': 'CollegeOrUniversity', name: 'Istanbul Technical University' },
+  ],
+  knowsAbout: profile.interests,
+  sameAs: activeLinks.map((l) => l.href),
+};
+---
+<!doctype html>
+<html lang={lang} data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {hasTr && (
+      <>
+        <link rel="alternate" hreflang="en" href={new URL(basePath, Astro.site)} />
+        <link rel="alternate" hreflang="tr" href={new URL(`/tr${basePath}`, Astro.site)} />
+        <link rel="alternate" hreflang="x-default" href={new URL(basePath, Astro.site)} />
+      </>
+    )}
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#070a12" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={profile.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('js');
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (t !== 'light' && t !== 'dark') {
+          t = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+        d.setAttribute('data-theme', t);
+        try { if (localStorage.getItem('motion') === 'paused') d.classList.add('motion-paused'); } catch (e) {}
+      })();
+    </script>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t('skip')}</a>
+    <Header lang={lang} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <script>
+      import { initReveal } from '../scripts/reveal';
+      initReveal();
+    </script>
+  </body>
+</html>

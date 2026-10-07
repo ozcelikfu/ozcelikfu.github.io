@@ -1,0 +1,70 @@
+---
+// A small explorable of the study design: the same argument, posed to an LLM
+// under different assigned identities.
+const identities = ['no identity', 'a theist', 'an atheist', 'an agnostic', 'a philosopher'];
+const args = ['cosmological', 'teleological', 'ontological', 'moral'];
+---
+<figure class="viz prompt" data-prompt>
+  <div class="prompt__row">
+    <span class="prompt__key mono">identity</span>
+    <div class="prompt__chips" role="group" aria-label="Assigned identity">
+      {identities.map((id, i) => (
+        <button type="button" class="chip-button" data-identity={id} aria-pressed={i === 0 ? 'true' : 'false'}>{id}</button>
+      ))}
+    </div>
+  </div>
+  <div class="prompt__row">
+    <span class="prompt__key mono">argument</span>
+    <div class="prompt__chips" role="group" aria-label="Argument">
+      {args.map((a, i) => (
+        <button type="button" class="chip-button" data-argument={a} aria-pressed={i === 0 ? 'true' : 'false'}>{a}</button>
+      ))}
+    </div>
+  </div>
+  <div class="prompt__box" aria-live="polite">
+    <p class="prompt__line"><span class="prompt__role mono">system</span><span data-system>You are a helpful assistant.</span></p>
+    <p class="prompt__line"><span class="prompt__role mono">user</span><span data-user>How convincing is the cosmological argument for God’s existence? Answer on a scale from 1 to 10 and explain.</span></p>
+    <p class="prompt__line prompt__line--model"><span class="prompt__role mono">model</span><span class="prompt__cursor" aria-hidden="true"></span><span class="visually-hidden">The model’s answer is what the study measures.</span></p>
+  </div>
+  <figcaption class="viz__note mono">Illustrative prompt template — not the exact prompts or results of the study.</figcaption>
+</figure>
+
+<style>
+  .prompt { margin: 0; display: grid; gap: 0.75rem; }
+  .prompt__row { display: grid; grid-template-columns: 80px 1fr; gap: 0.75rem; align-items: start; }
+  .prompt__key { color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.68rem; padding-top: 0.55em; }
+  .prompt__chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .prompt__box { margin-top: 0.4rem; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-2); padding: 0.9rem 1rem; font-size: 0.95rem; }
+  .prompt__line { display: grid; grid-template-columns: 64px 1fr; gap: 0.6rem; margin: 0 0 0.5rem; }
+  .prompt__line:last-child { margin: 0; }
+  .prompt__role { color: var(--accent); font-size: 0.7rem; padding-top: 0.25em; }
+  .prompt__line--model .prompt__role { color: var(--hot); }
+  .prompt__cursor { display: inline-block; width: 0.55em; height: 1.1em; background: var(--hot); animation: blink 1.1s steps(1) infinite; vertical-align: text-bottom; }
+  @keyframes blink { 50% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .prompt__cursor { animation: none; } }
+  .viz__note { margin: 0; font-size: 0.68rem; color: var(--muted); }
+  @media (max-width: 520px) { .prompt__row { grid-template-columns: 1fr; gap: 0.3rem; } .prompt__key { padding: 0; } }
+</style>
+
+<script>
+  function init(root: HTMLElement) {
+    const sys = root.querySelector<HTMLElement>('[data-system]')!;
+    const user = root.querySelector<HTMLElement>('[data-user]')!;
+    let identity = 'no identity', argument = 'cosmological';
+    const update = () => {
+      sys.textContent = identity === 'no identity' ? 'You are a helpful assistant.' : `You are ${identity}. Answer from that perspective.`;
+      user.textContent = `How convincing is the ${argument} argument for God’s existence? Answer on a scale from 1 to 10 and explain.`;
+    };
+    const group = (attr: string, set: (v: string) => void) => {
+      const btns = [...root.querySelectorAll<HTMLButtonElement>(`[${attr}]`)];
+      btns.forEach((b) => b.addEventListener('click', () => {
+        btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        set(b.getAttribute(attr)!);
+        update();
+      }));
+    };
+    group('data-identity', (v) => (identity = v));
+    group('data-argument', (v) => (argument = v));
+  }
+  document.querySelectorAll<HTMLElement>('[data-prompt]').forEach(init);
+</script>

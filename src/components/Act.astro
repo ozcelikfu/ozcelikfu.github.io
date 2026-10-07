@@ -1,0 +1,67 @@
+---
+// One chapter of the home-page narrative: numeral + kicker, equation line,
+// heading and text, with an optional figure on the side.
+interface Props {
+  id: string;
+  numeral: string;
+  kicker: string;
+  eq?: string;
+  plate?: 'voxels' | 'network' | 'waves' | 'graph';
+  flip?: boolean;
+}
+const { id, numeral, kicker, eq, plate = 'voxels', flip = false } = Astro.props;
+const hasFigure = Astro.slots.has('figure');
+---
+<section class:list={['act', `act--${plate}`, { 'act--flip': flip, 'act--solo': !hasFigure }]} id={id} aria-labelledby={`${id}-title`}>
+  <div class="act__plate" aria-hidden="true"></div>
+  <div class="wrap act__grid">
+    <div class="act__content" data-reveal>
+      <p class="kicker"><span class="numeral">{numeral}</span>{kicker}</p>
+      {eq && <p class="eq" aria-hidden="true" set:html={eq} />}
+      <slot />
+    </div>
+    {hasFigure && (
+      <div class="act__figure" data-reveal>
+        <slot name="figure" />
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .act { position: relative; padding-block: clamp(64px, 11vw, 140px); border-top: 1px solid var(--line); overflow: clip; isolation: isolate; }
+  .act__plate { position: absolute; inset: 0; z-index: -1; opacity: 0.9; pointer-events: none; }
+  .act--voxels .act__plate {
+    background:
+      radial-gradient(50% 60% at 85% 30%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 70%),
+      linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 28px 28px,
+      linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 28px 28px;
+    mask-image: radial-gradient(70% 80% at 85% 40%, #000 0%, transparent 75%);
+  }
+  .act--network .act__plate {
+    background: radial-gradient(45% 55% at 15% 60%, color-mix(in srgb, var(--hot) 10%, transparent), transparent 70%),
+      radial-gradient(circle at 1px 1px, var(--line-2) 1px, transparent 1.5px) 0 0 / 22px 22px;
+    mask-image: radial-gradient(60% 70% at 20% 50%, #000 0%, transparent 75%);
+  }
+  .act--waves .act__plate {
+    background: radial-gradient(50% 60% at 80% 50%, color-mix(in srgb, var(--violet) 10%, transparent), transparent 70%),
+      repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 6px, var(--line) 6px 7px, transparent 7px 18px, var(--line) 18px 19px, transparent 19px 42px);
+    mask-image: radial-gradient(60% 70% at 80% 50%, #000 0%, transparent 75%);
+  }
+  .act--graph .act__plate {
+    background: radial-gradient(50% 60% at 20% 40%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 70%),
+      radial-gradient(50% 60% at 80% 70%, color-mix(in srgb, var(--hot) 8%, transparent), transparent 70%);
+  }
+
+  .act__grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 88px); align-items: start; }
+  .act--flip .act__content { order: 2; }
+  .act--solo .act__grid { grid-template-columns: minmax(0, 760px); }
+  .act__content :global(h2) { max-width: 18ch; }
+  .act__content :global(p) { color: var(--text-2); max-width: 62ch; }
+  .act__figure { min-width: 0; position: sticky; top: calc(var(--header-h) + 40px); }
+  @media (max-width: 900px) {
+    .act__grid { grid-template-columns: 1fr; }
+    .act--flip .act__content { order: 0; }
+    .act__figure { position: static; }
+  }
+</style>

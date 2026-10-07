@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base title="Not found">
+  <section class="section">
+    <div class="wrap nf">
+      <p class="kicker kicker--plain">404 · signal not found</p>
+      <h1>This page could not be <em>reconstructed</em>.</h1>
+      <p class="lead">The voxels are silent here. Perhaps the page moved when the site was rebuilt.</p>
+      <p><a class="button" href="/">Back to the home page <Icon name="arrow-right" /></a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf { min-height: 50vh; display: grid; align-content: center; }
+  .nf h1 { font-size: clamp(2.2rem, 5vw, 3.8rem); max-width: 18ch; }
+</style>

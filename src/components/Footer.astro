@@ -1,0 +1,57 @@
+---
+import { profile, activeLinks } from '../data/profile';
+import { useTranslations, type Lang } from '../i18n/ui';
+import Icon from './Icon.astro';
+
+interface Props { lang: Lang }
+const t = useTranslations(Astro.props.lang);
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap site-footer__grid">
+    <div class="site-footer__id">
+      <p class="site-footer__name">{profile.name}</p>
+      <p class="muted">{profile.title} · {profile.affiliation}</p>
+      <p class="muted mono">{profile.tagline}</p>
+    </div>
+    <nav aria-label={t('footer.explore')}>
+      <p class="site-footer__h mono">{t('footer.explore')}</p>
+      <ul role="list">
+        <li><a href="/research/">{t('nav.research')}</a></li>
+        <li><a href="/publications/">{t('nav.publications')}</a></li>
+        <li><a href="/experience/">{t('nav.experience')}</a></li>
+        <li><a href="/ideas/">{t('nav.ideas')}</a></li>
+        <li><a href="/writing/">{t('nav.writing')}</a></li>
+        <li><a href="/about/">{t('nav.about')}</a></li>
+      </ul>
+    </nav>
+    {activeLinks.length > 0 && (
+      <nav aria-label={t('footer.elsewhere')}>
+        <p class="site-footer__h mono">{t('footer.elsewhere')}</p>
+        <ul role="list">
+          {activeLinks.map((l) => (
+            <li><a href={l.href} rel="me noopener" target="_blank">{l.label} <Icon name="arrow-up-right" size={14} /></a></li>
+          ))}
+        </ul>
+      </nav>
+    )}
+  </div>
+  <div class="wrap site-footer__base">
+    <p class="mono muted">© {year} {profile.name}</p>
+    <p class="mono muted">{t('footer.colophon')}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer { margin-top: clamp(48px, 8vw, 96px); border-top: 1px solid var(--line); background: var(--bg-2); }
+  .site-footer__grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2rem; padding-block: 3rem 2rem; }
+  .site-footer__name { font-family: var(--font-display); font-size: 1.5rem; margin: 0 0 0.3rem; }
+  .site-footer__id p { margin-bottom: 0.3rem; }
+  .site-footer__h { text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.8rem; }
+  .site-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
+  .site-footer ul a { text-decoration: none; color: var(--text-2); display: inline-flex; align-items: center; gap: 0.3em; }
+  .site-footer ul a:hover { color: var(--accent); }
+  .site-footer__base { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-block: 1.25rem 2rem; border-top: 1px solid var(--line); }
+  .site-footer__base p { margin: 0; }
+  @media (max-width: 720px) { .site-footer__grid { grid-template-columns: 1fr 1fr; } .site-footer__id { grid-column: 1 / -1; } }
+</style>

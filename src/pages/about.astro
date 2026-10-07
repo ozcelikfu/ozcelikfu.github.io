@@ -1,0 +1,70 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { profile, activeLinks } from '../data/profile';
+import { education } from '../data/experience';
+---
+<Base title="About" type="profile" description={profile.shortBio}>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="kicker">About</p>
+      <h1>Furkan <em>Özçelik</em></h1>
+      <p class="lead">{profile.title} at {profile.affiliation}. NeuroAI researcher, reader, and occasional essayist.</p>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="wrap about">
+      <div class="about__bio">
+        <p class="about__first">{profile.shortBio}</p>
+        <p>
+          Research at the meeting point of deep learning and cognitive neuroscience, with a particular interest in models
+          that make the brain’s representations readable — and in what those readouts teach about perception. Beyond the
+          lab: philosophy of mind, consciousness, and the conversation between science, philosophy and religion.
+        </p>
+        <p>Discovering life with wonder — sometimes through a book, sometimes through nature.</p>
+      </div>
+
+      <aside class="about__side">
+        <div class="card">
+          <p class="mono muted about__h">Interests</p>
+          <ul class="about__tags" role="list">
+            {profile.interests.map((i) => <li class="chip">{i}</li>)}
+          </ul>
+        </div>
+        <div class="card">
+          <p class="mono muted about__h">Education</p>
+          <ul class="about__edu" role="list">
+            {education.map((e) => (
+              <li><span class="mono">{e.period}</span><span>{e.degree} · {e.org.split('·').pop()?.trim()}</span></li>
+            ))}
+          </ul>
+        </div>
+        {activeLinks.length > 0 && (
+          <div class="card">
+            <p class="mono muted about__h">Elsewhere</p>
+            <ul class="about__links" role="list">
+              {activeLinks.map((l) => (
+                <li><a href={l.href} rel="me noopener" target="_blank">{l.label} <Icon name="arrow-up-right" size={14} /></a></li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .about { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.8fr); gap: clamp(28px, 6vw, 80px); align-items: start; }
+  .about__bio p { color: var(--text-2); font-size: 1.08rem; max-width: 62ch; }
+  .about__first { font-family: var(--font-display); font-size: clamp(1.25rem, 2vw, 1.45rem) !important; line-height: 1.5; color: var(--text) !important; }
+  .about__side { display: grid; gap: 1rem; }
+  .about__h { text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.68rem; margin-bottom: 0.8rem; }
+  .about__tags { display: flex; flex-wrap: wrap; gap: 0.4rem; list-style: none; margin: 0; padding: 0; }
+  .about__edu, .about__links { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+  .about__edu li { display: grid; gap: 0.1rem; font-size: 0.95rem; }
+  .about__edu .mono { color: var(--hot); font-size: 0.72rem; }
+  .about__links a { display: inline-flex; align-items: center; gap: 0.3em; text-decoration: none; }
+  @media (max-width: 860px) { .about { grid-template-columns: 1fr; } }
+</style>
